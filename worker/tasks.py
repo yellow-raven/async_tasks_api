@@ -10,6 +10,12 @@ celery = Celery(
        backend='redis://redis:6379/0'
     )
 
+# Configure Celery to use threads for concurrency
+celery.conf.update(
+    task_concurrency=4,  # Use 4 threads for concurrency
+    worker_prefetch_multiplier=1  # Prefetch one task at a time
+)
+
 @celery.task()
 def sleep(parameters):
     logger.info('Got Request - Starting work ')
