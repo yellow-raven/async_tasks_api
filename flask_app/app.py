@@ -1,6 +1,26 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from waitress import serve
 from celery import Celery
+from logging.config import dictConfig
+
+dictConfig(
+    {
+        "version": 1,
+        "formatters": {
+            "default": {
+                "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
+            }
+        },
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "stream": "ext://sys.stdout",
+                "formatter": "default",
+            }
+        },
+        "root": {"level": "INFO", "handlers": ["console"]},
+    }
+)
 
 app = Flask(__name__)
 
@@ -14,7 +34,8 @@ celery = Celery(
 def call_method(task_name):
     app.logger.info(f"Invoking Method {task_name}")
     #queue name in task folder.function name
-    r = celery.send_task(f'tasks.{task_name}', kwargs={'x': 1, 'y': 2})
+    data = request.json
+    r = celery.send_task(f'tasks.{task_name}', kwargs={'parameters': data})
     app.logger.info(r.backend)
     return r.id
 
