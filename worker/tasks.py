@@ -11,15 +11,20 @@ celery = Celery(
     )
 
 @celery.task()
-def long_sleep(x, y):
+def sleep(parameters):
     logger.info('Got Request - Starting work ')
-    time.sleep(20)
+    time.sleep(parameters['duration'])
     logger.info('Work Finished ')
-    return x + y
+    return f"Slept for {parameters['duration']} seconds."
 
 @celery.task()
-def short_sleep(x, y):
+def fibo(parameters):
     logger.info('Got Request - Starting work ')
-    time.sleep(1)
+    n=parameters['iter']
+    fibo = []
+    a,b = 0,1
+    while b < n:
+        a,b = b,a+b
+        fibo.append(a)
     logger.info('Work Finished ')
-    return x + y
+    return fibo

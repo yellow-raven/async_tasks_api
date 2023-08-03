@@ -8,7 +8,7 @@ RUN pip3 --no-cache-dir install -r requirements.txt
 ENV FLASK_ENV=development
 EXPOSE 5001
 
-CMD ["python","app.py"]
+CMD ["python","app.py", "--loglevel=info"]
 
 #CMD gunicorn --workers $WORKERS \
 #  --threads $THREADS \
