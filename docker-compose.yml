@@ -15,8 +15,16 @@ services:
       - "15672:15672"
       - "5672:5672"
 
-  worker:
-    build: './worker'
+  hard_worker:
+    build: './hard_worker'
+    user: nobody
+    depends_on:
+      - rabbit
+      - redis
+      - flask_app
+
+  lazy_worker:
+    build: './lazy_worker'
     user: nobody
     depends_on:
       - rabbit
